@@ -49,6 +49,5 @@ def main():
     g.output()
     input("Нажмите Enter для выхода...")
 
-
 if __name__ == "__main__":
     main()
