@@ -55,7 +55,6 @@ def main():
     res = ymn(bs1, bs2)
     output_bits(res)
     print(res)
-
 if __name__ == "__main__":
     main()
     input("Press Enter to continue...")
