@@ -1,35 +1,61 @@
-bs1 = input('Input bs 1: ')
-if len(bs1) > 8:
-    print("Incorrect input")
-    exit()
-for b in bs1:
-    if (b != "0") and (b != '1'):
-        print("Incorrect input")
-        exit()
+import sys
+def input_bits():
+    bits = ['0'] * 8
+    s = input("Input bs: ")
 
-d = 8 - len(bs1)
-suffix = '0' * d
-bs1 = suffix + bs1
+    if len(s) > 8 or not all(c in '01' for c in s):
+        print("Incorrect")
+        sys.exit(0)
 
-bs2 = input('Input bs 2: ')
-if len(bs2) > 8:
-    print("Incorrect input")
-    exit()
-for b in bs2:
-    if (b != "0") and (b != '1'):
-        print("Incorrect input")
-        exit()
+    for i, c in enumerate(s):
+        bits[8 - len(s) + i] = c
+    return bits
 
-d = 8 - len(bs2)
-suffix = '0' * d
-bs2 = suffix + bs2
+def file_input_bits(filename):
+    try:
+        with open(filename, 'r') as f:
+            s = f.read().strip()
+    except FileNotFoundError:
+        print("File not found")
+        sys.exit(0)
 
-bs3 = ""
-i = 0
-while i < 8:
-    if bs1[i] == '1' and bs2[i] == '1':
-        bs3 += '1'
-    else:
-        bs3 += '0'
-    i += 1
-print('Result=', bs3)
+    bits = ['0'] * 8
+
+    if len(s) > 8 or not all(c in '01' for c in s):
+        print("Incorrect")
+        sys.exit(0)
+
+    for i, c in enumerate(s):
+        bits[8 - len(s) + i] = c
+    return bits
+
+
+def output_bits(bits):
+    print("Stroka =", ''.join(bits))
+
+
+def ymn(bits1, bits2):
+    return ['1' if b1 == '1' and b2 == '1' else '0' for b1, b2 in zip(bits1, bits2)]
+
+
+def main():
+    bs1 = ['0', '0', '0', '0', '0', '0', '0', '0']
+    bs2 = ['0', '0', '0', '0', '0', '0', '0', '0']
+
+    bs1 = file_input_bits("a.txt")
+    bs2 = input_bits()
+
+    print("BS 1:", end=' ')
+    output_bits(bs1)
+    print()
+    print("BS 2:", end=' ')
+    output_bits(bs2)
+    print()
+
+    res = ymn(bs1, bs2)
+    output_bits(res)
+    print(res)
+
+if __name__ == "__main__":
+    main()
+    input("Press Enter to continue...")
