@@ -1,5 +1,15 @@
 import sys
 
+
+class BitStringException(Exception):
+    def __init__(self, message: str):
+        super().__init__(message)
+        self.msg = message
+
+    def __str__(self):
+        return self.msg
+
+
 class BitString:
     def __init__(self, inp_string=""):
         self.size = 8
@@ -13,11 +23,12 @@ class BitString:
             while i < length:
                 c = inp_string[i]
                 if c != '0' and c != '1':
-                    print(f"Некорректный символ в строке: {c}")
-                    sys.exit(0)
+                    raise BitStringException(f"Некорректный символ в строке: '{c}'")
                 tmps[i] = c
                 i += 1
 
+            for j in range(self.size):
+                self.bs[j] = '0'
             for j in range(i):
                 self.bs[self.size - i + j] = tmps[j]
 
@@ -31,12 +42,12 @@ class BitString:
             if i >= self.size or tmp == '\n':
                 break
             if tmp != '0' and tmp != '1':
-                print("Некорректный ввод")
-                sys.exit(0)
+                raise BitStringException(f"Некорректный ввод: недопустимый символ '{tmp}'")
             tmps[i] = tmp
             i += 1
 
-        self.bs = ['0'] * self.size
+        for j in range(self.size):
+            self.bs[j] = '0'
         for j in range(i):
             self.bs[self.size - i + j] = tmps[j]
 
@@ -48,10 +59,7 @@ class BitString:
     def conjanction(self, b):
         result = BitString()
         for j in range(self.size):
-            if (self.bs[j] == '1') and (b.bs[j] == '1'):
-                result.bs[j] = '1'
-            else:
-                result.bs[j] = '0'
+            result.bs[j] = '1' if (self.bs[j] == '1' and b.bs[j] == '1') else '0'
         return result
 
     def fileinput(self, filename):
@@ -59,23 +67,31 @@ class BitString:
             with open(filename, 'r', encoding='utf-8') as file:
                 content = file.read()
         except Exception:
-            print(f"Ошибка: файл {filename} не открыт")
-            sys.exit(0)
+            raise BitStringException(f"Не удалось открыть файл: {filename}")
 
         tmps = ['0'] * self.size
         i = 0
+        hasBits = False
         for tmp in content:
             if i >= self.size:
                 break
             if tmp == '0' or tmp == '1':
                 tmps[i] = tmp
                 i += 1
+                hasBits = True
 
-        self.bs = ['0'] * self.size
+        if not hasBits:
+            raise BitStringException(f"Файл '{filename}' не содержит битов (0 или 1)")
+
+        for j in range(self.size):
+            self.bs[j] = '0'
         for j in range(i):
             self.bs[self.size - i + j] = tmps[j]
 
     def fileoutput(self, filename):
-        with open(filename, 'w', encoding='utf-8') as file:
-            for j in range(self.size):
-                file.write(self.bs[j])
+        try:
+            with open(filename, 'w', encoding='utf-8') as file:
+                for j in range(self.size):
+                    file.write(self.bs[j])
+        except Exception:
+            raise BitStringException(f"Не удалось создать файл для записи: {filename}")
