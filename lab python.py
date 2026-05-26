@@ -1,57 +1,38 @@
+
 import sys
 from BitString import BitString, BitStringException
 
-
 def main():
     try:
-        print("проверка конструкторов")
+        print("=== Проверка BitString с перегрузками ===\n")
 
-        print("\n1. Конструктор по умолчанию:")
-        a = BitString()
-        print("a = ", end="")
-        a.output()
+        a = BitString("10110110")
+        b = BitString("11001101")
 
-        print("\n2. Конструктор с параметром:")
-        b = BitString("1010")
-        print("b = ", end="")
-        b.output()
+        print("a =", a)                    # __str__
+        print("b =", b)
 
-        print("\n3. Конструктор копирования:")
-        c = BitString("".join(b.bs))
-        print("c (копия b) = ", end="")
-        c.output()
+        c = a & b                          # __and__
+        print("a & b =", c)
 
-        print("\n4. Ввод строки 1 с консоли:")
+        print("a[2] =", a[2])              # __getitem__
+        a[3] = '1'                         # __setitem__
+        print("a после a[3] = '1' →", a)
+
+        print("\nВведите битовую строку:")
         d = BitString()
-        d.input()
-        print("d = ", end="")
-        d.output()
+        d.input()                          # можно оставить input(), т.к. >> в Python нестандартно
+        print("Вы ввели:", d)
 
-        print("\n5. Чтение строки 2 из файла b.txt:")
         e = BitString()
-        e.fileinput("b.txt")
-        print("e = ", end="")
-        e.output()
-
-        print("\n6. Конъюнкция d AND e:")
-        f = d.conjanction(e)
-        print("f = ", end="")
-        f.output()
-
-        print("\n7. Сохранение в c.txt...")
-        f.fileoutput("c.txt")
-        print("Готово!")
-
-        print("\n8. Оператор присваивания:")
-        g = BitString()
-        g = f
-        print("g = f = ", end="")
-        g.output()
+        e = d                              # присваивание
+        print("e = d →", e)
 
     except BitStringException as e:
-        print(f"\n Ошибка: {e}", file=sys.stderr)
+        print(f"\nОшибка: {e}", file=sys.stderr)
         return 1
-    input("Нажмите Enter для выхода...")
+
+    input("\nНажмите Enter для выхода...")
     return 0
 
 
